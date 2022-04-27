@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-router.use("/", (_req, res, _next) => {
+router.get("/", (_, res) => {
   // console.log("Root path middleware");
   res.send("<h1>Hello from Express</h1>");
 });
