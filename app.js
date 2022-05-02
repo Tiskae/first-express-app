@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 
-const AdminRouter = require("./routes/admin");
+const AdminData = require("./routes/admin");
 const ShopRouter = require("./routes/shop");
 
 const app = express();
@@ -11,7 +11,7 @@ const port = process.env.PORT || 3030;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/admin", AdminRouter);
+app.use("/admin", AdminData.routes);
 app.use(ShopRouter);
 
 // ... all valid routes and methods handled here
