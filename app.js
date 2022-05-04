@@ -6,6 +6,10 @@ const AdminData = require("./routes/admin");
 const ShopRouter = require("./routes/shop");
 
 const app = express();
+
+app.set("view engine", "pug");
+app.set("views", "views");
+
 const port = process.env.PORT || 3030;
 
 app.use(bodyParser.urlencoded({ extended: false }));
