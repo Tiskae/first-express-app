@@ -22,7 +22,8 @@ app.use(ShopRouter);
 
 // 404 error page
 app.use((_, res) => {
-  res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
+  // res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
+  res.render("404", { docTitle: "Page not found" });
 });
 
 app.listen(port);
