@@ -5,9 +5,12 @@ const bodyParser = require("body-parser");
 const AdminData = require("./routes/admin");
 const ShopRouter = require("./routes/shop");
 
+const expressHbs = require("express-handlebars");
+
 const app = express();
 
-app.set("view engine", "pug");
+app.engine("hbs", expressHbs());
+app.set("view engine", "hbs");
 app.set("views", "views");
 
 const port = process.env.PORT || 3030;
