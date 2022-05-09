@@ -5,19 +5,19 @@ const bodyParser = require("body-parser");
 const AdminData = require("./routes/admin");
 const ShopRouter = require("./routes/shop");
 
-const expressHbs = require("express-handlebars");
+// const expressHbs = require("express-handlebars");
 
 const app = express();
 
-app.engine(
-  "hbs",
-  expressHbs({
-    layoutsDir: "views/layouts/",
-    defaultLayout: "main-layout",
-    extname: "hbs",
-  })
-);
-app.set("view engine", "hbs");
+// app.engine(
+//   "ejs"
+// expressHbs({
+//   layoutsDir: "views/layouts/",
+//   defaultLayout: "main-layout",
+//   extname: "hbs",
+// })
+// );
+app.set("view engine", "ejs");
 app.set("views", "views");
 
 const port = process.env.PORT || 3030;
@@ -33,7 +33,7 @@ app.use(ShopRouter);
 // 404 error page
 app.use((_, res) => {
   // res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
-  res.render("404", { docTitle: "Page not found" });
+  res.render("404", { docTitle: "Page not found", path: "" });
 });
 
 app.listen(port);
