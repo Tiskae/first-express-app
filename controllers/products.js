@@ -1,11 +1,10 @@
 const Product = require("../models/product");
 
+// Admin middlewares
 exports.getAddProducts = (req, res, next) => {
-  res.render("add-product", {
+  res.render("admin/add-product", {
     docTitle: "Add product",
     path: "/admin/add-product",
-    activeShop: false,
-    activeAddProduct: true,
   });
 };
 
@@ -15,16 +14,43 @@ exports.postAddProducts = (req, res, next) => {
   res.redirect("/");
 };
 
-exports.getProducts = (req, res, next) => {
+// Product middlewares
+
+exports.getIndex = (req, res, next) => {
+  res.render("shop/index", {
+    docTitle: "My Shop",
+    path: "/",
+  });
+};
+
+exports.getCart = (req, res, next) => {
+  res.render("shop/cart", {
+    docTitle: "Cart",
+    path: "/cart",
+  });
+};
+
+exports.getCheckout = (req, res, next) => {
+  res.render("shop/checkout", {
+    docTitle: "Checkout",
+    path: "/checkout",
+  });
+};
+
+exports.getProductDetails = (req, res, next) => {
+  res.render("shop/product-details", {
+    docTitle: "Product Details",
+    path: "/product-details",
+  });
+};
+
+exports.getProductsList = (req, res, next) => {
   Product.fetchAll((products) => {
     console.log(products);
-    res.render("shop", {
+    res.render("shop/products-list", {
       prods: products,
-      docTitle: "My Shop",
-      path: "/",
-      listIsEmpty: products.length === 0,
-      activeShop: true,
-      activeAddProduct: false,
+      docTitle: "All Products",
+      path: "/products-list",
     });
   });
 };
