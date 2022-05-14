@@ -9,7 +9,10 @@ exports.getAddProducts = (req, res, next) => {
 };
 
 exports.postAddProducts = (req, res, next) => {
-  const newProduct = new Product(req.body.title);
+  const { title, imageUrl, price, descripion } = req.body;
+  const newProduct = new Product(title, imageUrl, price, descripion);
+  console.log(newProduct);
+
   newProduct.save();
   res.redirect("/");
 };
@@ -17,9 +20,13 @@ exports.postAddProducts = (req, res, next) => {
 // Product middlewares
 
 exports.getIndex = (req, res, next) => {
-  res.render("shop/index", {
-    docTitle: "My Shop",
-    path: "/",
+  Product.fetchAll((products) => {
+    console.log(products);
+    res.render("shop/index", {
+      docTitle: "My Shop",
+      path: "/",
+      prods: products,
+    });
   });
 };
 
