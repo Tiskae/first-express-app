@@ -9,7 +9,7 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll((products) => {
-    console.log(products);
+    // console.log(products);
     res.render("admin/products", {
       docTitle: "Admin Products",
       path: "/admin/products",

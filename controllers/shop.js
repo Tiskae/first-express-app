@@ -9,9 +9,9 @@ exports.getAddProducts = (req, res, next) => {
 };
 
 exports.postAddProducts = (req, res, next) => {
-  const { title, imageUrl, price, descripion } = req.body;
-  const newProduct = new Product(title, imageUrl, price, descripion);
-  console.log(newProduct);
+  const { title, imageUrl, price, description } = req.body;
+  const newProduct = new Product(title, imageUrl, price, description);
+  //   console.log(newProduct);
 
   newProduct.save();
   res.redirect("/");
@@ -21,7 +21,7 @@ exports.postAddProducts = (req, res, next) => {
 
 exports.getIndex = (req, res, next) => {
   Product.fetchAll((products) => {
-    console.log(products);
+    // console.log(products);
     res.render("shop/index", {
       docTitle: "My Shop",
       path: "/",
@@ -34,6 +34,13 @@ exports.getCart = (req, res, next) => {
   res.render("shop/cart", {
     docTitle: "Cart",
     path: "/cart",
+  });
+};
+
+exports.getOrders = (req, res, next) => {
+  res.render("shop/orders", {
+    docTitle: "Your orders",
+    path: "/orders",
   });
 };
 
@@ -53,7 +60,7 @@ exports.getProductDetails = (req, res, next) => {
 
 exports.getProductsList = (req, res, next) => {
   Product.fetchAll((products) => {
-    console.log(products);
+    // console.log(products);
     res.render("shop/products-list", {
       prods: products,
       docTitle: "All Products",
