@@ -88,11 +88,19 @@ main {
 .card__actions {
   padding: 1rem;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .card__actions button,
 .card__actions a {
   margin: 0 0.25rem;
+  transition: all 0.2s;
+}
+
+.card__actions a {
+  display: block;
+  padding: 1px 6px;
 }
 
 .btn {
@@ -104,8 +112,19 @@ main {
   cursor: pointer;
 }
 
+.btn--delete {
+  color: red;
+  border-color: red;
+}
+
 .btn:hover,
 .btn:active {
   background-color: #00695c;
+  color: white;
+}
+
+.btn--delete:hover,
+.btn--delete:active {
+  background-color: red;
   color: white;
 }
