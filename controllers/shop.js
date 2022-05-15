@@ -1,23 +1,5 @@
 const Product = require("../models/product");
-
-// Admin middlewares
-exports.getAddProducts = (req, res, next) => {
-  res.render("admin/add-product", {
-    docTitle: "Add product",
-    path: "/admin/add-product",
-  });
-};
-
-exports.postAddProducts = (req, res, next) => {
-  const { title, imageUrl, price, description } = req.body;
-  const newProduct = new Product(title, imageUrl, price, description);
-  //   console.log(newProduct);
-
-  newProduct.save();
-  res.redirect("/");
-};
-
-// Product middlewares
+const Cart = require("../models/cart");
 
 exports.getIndex = (req, res, next) => {
   Product.fetchAll((products) => {
@@ -37,6 +19,15 @@ exports.getCart = (req, res, next) => {
   });
 };
 
+exports.postCart = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.findById(prodId, (product) => {
+    Cart.addProduct(prodId, product.price);
+  });
+
+  res.redirect("/cart");
+};
+
 exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
     docTitle: "Your orders",
@@ -51,20 +42,24 @@ exports.getCheckout = (req, res, next) => {
   });
 };
 
-exports.getProductDetails = (req, res, next) => {
-  res.render("shop/product-details", {
-    docTitle: "Product Details",
-    path: "/product-details",
-  });
+exports.getProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  Product.findById(prodId, (product) =>
+    res.render("shop/product-details", {
+      docTitle: product.title,
+      path: "/products",
+      product, // product: product
+    })
+  );
 };
 
-exports.getProductsList = (req, res, next) => {
+exports.getProducts = (req, res, next) => {
   Product.fetchAll((products) => {
     // console.log(products);
     res.render("shop/products-list", {
       prods: products,
       docTitle: "All Products",
-      path: "/products-list",
+      path: "/products",
     });
   });
 };
