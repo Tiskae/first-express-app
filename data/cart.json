@@ -1,7 +1,1 @@
-{
-  "products": [
-    { "id": "jh9920iji9jsjijnsjnjisji23jnjsbnjs", "quantity": 2 },
-    { "id": "u98202uhjkeiuhjkwihjehjekwijeejeije", "quantity": 1 }
-  ],
-  "totalPrice": 1200000
-}
+{"products":[{"id":"jh9920iji9jsjijnsjnjisji23jnjsbnjs","quantity":3},{"id":"u98202uhjkeiuhjkwihjehjekwijeejeije","quantity":2},{"id":"fhju894uy34u98uhbjfiu89383939s","quantity":1},{"id":"hwi930iu3hbjiwhjeiuweiu923uh2jhiejn2","quantity":1},{"id":"932u893uhbdjkhji029iuhjei9uhjbno23ee","quantity":1}],"totalPrice":702320000}
