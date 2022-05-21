@@ -16,9 +16,10 @@ exports.postAddProducts = (req, res, next) => {
     imageUrl,
     description,
   })
-    .then((res) =>
-      console.log("%c[Product added to DB successfully]", "color: #00ff00")
-    )
+    .then((result) => {
+      console.log("%c[Product added to DB successfully]", "color: #00ff00");
+      res.redirect("/admin/products");
+    })
     .catch((error) => console.log(error));
 };
 
@@ -72,5 +73,11 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.id;
-  Product.delete(prodId, () => res.redirect("/admin/products"));
+  Product.findById(prodId)
+    .then((product) => product.destroy())
+    .then((result) => {
+      console.log("[Product deleted successfully!]");
+      res.redirect("/admin/products");
+    })
+    .catch();
 };
