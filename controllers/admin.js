@@ -1,5 +1,4 @@
 const Product = require("../models/product");
-const db = require("../util/database");
 // Admin middlewares
 exports.getAddProducts = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -10,24 +9,23 @@ exports.getAddProducts = (req, res, next) => {
 };
 
 exports.postAddProducts = (req, res, next) => {
-  const { title, imageUrl, price, description } = req.body;
-  const newProduct = new Product(null, title, imageUrl, price, description);
-  //   console.log(newProduct);
-
-  newProduct
-    .save()
-    .then((dbResponse) => {
-      res.redirect("/");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  const { title, price, imageUrl, description } = req.body;
+  Product.create({
+    title,
+    price,
+    imageUrl,
+    description,
+  })
+    .then((res) =>
+      console.log("%c[Product added to DB successfully]", "color: #00ff00")
+    )
+    .catch((error) => console.log(error));
 };
 
 exports.getEditProduct = (req, res, next) => {
   const prodId = req.params.productId;
   Product.findById(prodId)
-    .then(([[product]]) => {
+    .then((product) => {
       if (!product) redirect("/");
 
       const editMode = req.query.edit;
@@ -45,20 +43,28 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { id, title, imageUrl, price, description } = req.body;
-  const updatedProduct = new Product(id, title, imageUrl, price, description);
-  updatedProduct
-    .save()
-    .then(() => res.redirect("/admin/products"))
+  Product.findById(id)
+    .then((product) => {
+      product.title = title;
+      product.imageUrl = imageUrl;
+      product.price = price;
+      product.description = description;
+      return product.save();
+    })
+    .then((result) => {
+      console.log("[Updated product!]");
+      res.redirect("/admin/products");
+    })
     .catch((err) => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then(([rows, fieldData]) => {
+  Product.findAll()
+    .then((products) => {
       res.render("admin/products", {
         docTitle: "Admin Products",
         path: "/admin/products",
-        prods: rows,
+        prods: products,
       });
     })
     .catch((err) => console.log(err));

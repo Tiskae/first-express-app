@@ -7,6 +7,7 @@ const shopRouter = require("./routes/shop");
 const _404Controller = require("./controllers/404");
 
 const app = express();
+const sequelize = require("./util/database");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -22,4 +23,10 @@ app.use(shopRouter);
 // 404 error page
 app.use(_404Controller.get404);
 
-app.listen(port);
+sequelize
+  .sync()
+  .then((response) => {
+    console.log("%c[Connected to Db succesfully!]", "color: #00ff00");
+    app.listen(port);
+  })
+  .catch((error) => console.log("error"));
