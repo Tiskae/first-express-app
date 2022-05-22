@@ -11,6 +11,8 @@ const sequelize = require("./util/database");
 
 const Product = require("./models/product");
 const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -36,13 +38,18 @@ app.use(shopRouter);
 // 404 error page
 app.use(_404Controller.get404);
 
-// Sequelize table relationships
+// Sequelize table associations
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 // Sequelize init
 sequelize
   .sync()
+  // .sync({ force: true })
   .then((response) => {
     return User.findById(1);
   })
@@ -50,10 +57,10 @@ sequelize
     if (!user) {
       return User.create({ name: "Tiskae", email: "test@test.com " });
     }
-
     return user;
   })
-  .then((user) => {
+  .then((user) => user.createCart())
+  .then((result) => {
     console.log("[Connected to Db succesfully!]");
     app.listen(port);
   })

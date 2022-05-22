@@ -14,28 +14,20 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  Cart.getCart((cart) => {
-    Product.fetchAll((products) => {
-      const cartProducts = [];
-      for (const product of products) {
-        const cartProductData = cart.products.find(
-          (prod) => prod.id === product.id
-        );
-        if (cartProductData) {
-          cartProducts.push({
-            productData: product,
-            quantity: cartProductData.quantity,
-          });
-        }
-      }
-      res.render("shop/cart", {
-        docTitle: "Cart",
-        path: "/cart",
-        products: cartProducts,
-        totalPrice: cart.totalPrice,
-      });
-    });
-  });
+  req.user
+    .getCart()
+    .then((cart) =>
+      cart.getProducts().then((cartProducts) =>
+        res.render("shop/cart", {
+          docTitle: "Cart",
+          path: "/cart",
+          products: cartProducts,
+          // totalPrice: cart.totalPrice,
+          totalPrice: 100,
+        })
+      )
+    )
+    .catch((error) => console.log(error));
 };
 
 exports.postCart = (req, res, next) => {

@@ -10,14 +10,15 @@ exports.getAddProducts = (req, res, next) => {
 
 exports.postAddProducts = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
-  Product.create({
-    title,
-    price,
-    imageUrl,
-    description,
-  })
+  req.user
+    .createProduct({
+      title,
+      price,
+      imageUrl,
+      description,
+    })
     .then((result) => {
-      console.log("%c[Product added to DB successfully]", "color: #00ff00");
+      console.log("[Product added to DB successfully]");
       res.redirect("/admin/products");
     })
     .catch((error) => console.log(error));
@@ -25,8 +26,11 @@ exports.postAddProducts = (req, res, next) => {
 
 exports.getEditProduct = (req, res, next) => {
   const prodId = req.params.productId;
-  Product.findById(prodId)
-    .then((product) => {
+  req.user
+    .getProducts({ where: { id: prodId } })
+    // Product.findById(prodId)
+    .then((products) => {
+      const product = products[0];
       if (!product) redirect("/");
 
       const editMode = req.query.edit;
@@ -60,7 +64,9 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.user
+    .getProducts()
+    // Product.findAll()
     .then((products) => {
       res.render("admin/products", {
         docTitle: "Admin Products",
