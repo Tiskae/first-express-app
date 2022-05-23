@@ -1,0 +1,23 @@
+.cart {
+  display: grid;
+  justify-items: center;
+}
+
+.cart__list {
+  list-style: none;
+  display: grid;
+  grid-gap: 1.5rem;
+}
+
+.cart__item {
+  background-color: white;
+  display: grid;
+  grid-template-columns: 1fr repeat(2, max-content);
+  align-items: center;
+  gap: 5rem;
+  padding: 0.5rem 2rem;
+  border-radius: 2rem;
+  box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  font-weight: bold;
+}

@@ -189,11 +189,23 @@ form {
   background: white;
   border-radius: 3px;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn--delete {
+  color: red;
+  border-color: red;
 }
 
 .btn:hover,
 .btn:active {
   background-color: #00695c;
+  color: white;
+}
+
+.btn--delete:active,
+.btn--delete:hover {
+  background-color: red;
   color: white;
 }
 
