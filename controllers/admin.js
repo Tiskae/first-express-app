@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+
 // Admin middlewares
 exports.getAddProducts = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -10,15 +11,11 @@ exports.getAddProducts = (req, res, next) => {
 
 exports.postAddProducts = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
-  req.user
-    .createProduct({
-      title,
-      price,
-      imageUrl,
-      description,
-    })
+  const product = new Product(title, price, imageUrl, description);
+  product
+    .save()
     .then(result => {
-      console.log("[Product added to DB successfully]");
+      console.log(result, "[Product added to DB successfully]");
       res.redirect("/admin/products");
     })
     .catch(error => console.log(error));
@@ -63,19 +60,17 @@ exports.postAddProducts = (req, res, next) => {
 //     .catch(err => console.log(err));
 // };
 
-// exports.getProducts = (req, res, next) => {
-//   req.user
-//     .getProducts()
-//     // Product.findAll()
-//     .then(products => {
-//       res.render("admin/products", {
-//         docTitle: "Admin Products",
-//         path: "/admin/products",
-//         prods: products,
-//       });
-//     })
-//     .catch(err => console.log(err));
-// };
+exports.getProducts = (req, res, next) => {
+  Product.fetchAll()
+    .then(products => {
+      res.render("admin/products", {
+        docTitle: "Admin Products",
+        path: "/admin/products",
+        prods: products,
+      });
+    })
+    .catch(err => console.log(err));
+};
 
 // exports.postDeleteProduct = (req, res, next) => {
 //   const prodId = req.body.id;
