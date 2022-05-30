@@ -9,6 +9,8 @@ const _404Controller = require("./controllers/404");
 const app = express();
 const mongoConnect = require("./util/database").mongoConnect;
 
+const User = require("./models/user");
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -18,15 +20,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Get user middleware
-// app.use((req, res, next) => {
-// User.findById(1)
-//   .then((user) => {
-//     req.user = user;
-//     next();
-//   })
-//   .catch((err) => console.log(err));
-//   next();
-// });
+app.use((req, res, next) => {
+  User.findById("6294a90d88623b463f255ac0")
+    .then(user => {
+      // console.log(user);
+
+      req.user = new User(user.username, user.email, user.cart, user._id);
+
+      next();
+    })
+    .catch(err => {
+      console.log(err);
+      next();
+    });
+});
 
 app.use("/admin", adminRouter);
 app.use(shopRouter);
