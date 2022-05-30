@@ -1,21 +1,25 @@
-const mongodb = require("mongodb");
-const MongoClient = mongodb.MongoClient;
+const { MongoClient } = require("mongodb");
 
 let _db;
 
 const mongoConnect = callback => {
-  MongoClient.connect(
-    "mongodb+srv://Tiskae:gSYojxqT6Vt0j2wB@cluster0.irqruor.mongodb.net/?retryWrites=true&w=majority"
-  )
-    .then(client => {
-      _db = client.db();
-      console.log("Connected!");
-      callback();
-    })
-    .catch(err => {
-      console.log(err);
-      throw err;
-    });
+  const uri =
+    "mongodb+srv://Tiskae:o8M4nQR36nhclwpd@cluster0.irqruor.mongodb.net/?retryWrites=true&w=majority";
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    // serverApi: ServerApiVersion.v1,
+  });
+  client.connect((err, result) => {
+    // const collection = client.db("test").collection("devices");
+    console.log(err);
+    // console.log(client.db("cluster0"));
+
+    _db = client.db("cluster0");
+    callback(result);
+    // perform actions on the collection object
+    // client.close();
+  });
 };
 
 const getDb = () => {
