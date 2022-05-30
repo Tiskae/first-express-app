@@ -3,12 +3,13 @@ const { ObjectId } = require("mongodb");
 const getDb = require("../util/database").getDb;
 
 class Product {
-  constructor(title, price, imageUrl, description, id) {
+  constructor(title, price, imageUrl, description, id, userId) {
     this.title = title;
     this.price = price;
     this.imageUrl = imageUrl;
     this.description = description;
-    this._id = id;
+    this._id = id ? new ObjectId(id) : null;
+    this.userId = userId;
   }
 
   save() {
@@ -26,9 +27,7 @@ class Product {
     } else {
       dbOp = db.collection("products").insertOne(this);
     }
-    return dbOp
-      .then(result => console.log(result))
-      .catch(err => console.log(err));
+    return dbOp;
   }
 
   static fetchAll() {
@@ -50,7 +49,7 @@ class Product {
       .catch(error => console.log(error));
   }
 
-  static delete(id) {
+  static deleteById(id) {
     const db = getDb();
     return db
       .collection("products")

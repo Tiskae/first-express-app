@@ -1,4 +1,3 @@
-const { ObjectId } = require("mongodb");
 const Product = require("../models/product");
 
 // Admin middlewares
@@ -12,7 +11,14 @@ exports.getAddProducts = (req, res, next) => {
 
 exports.postAddProducts = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
-  const product = new Product(title, price, imageUrl, description);
+  const product = new Product(
+    title,
+    price,
+    imageUrl,
+    description,
+    null,
+    req.user._id
+  );
   product
     .save()
     .then(result => {
@@ -50,7 +56,8 @@ exports.postEditProduct = (req, res, next) => {
     price,
     imageUrl,
     description,
-    new ObjectId(id)
+    id,
+    req.user._id
   );
 
   product
@@ -77,7 +84,7 @@ exports.getProducts = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.id;
 
-  Product.delete(prodId)
+  Product.deleteById(prodId)
     .then(result => {
       console.log(result, "[Product deleted successfully!]");
       res.redirect("/admin/products");
