@@ -218,3 +218,32 @@ form {
     display: none;
   }
 }
+
+.orders {
+  padding: 0rem 1rem;
+}
+
+.orders h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  margin-bottom: 0.6rem;
+  background-color: line;
+  color: #686767;
+}
+
+.order__item {
+  list-style: none;
+  border: 1px solid green;
+  margin: 2rem 0rem;
+  padding: 1rem;
+}
+
+.order__item ul {
+  list-style: none;
+}
+
+.order__item li {
+}
+
+.order__item h1 {
+}
