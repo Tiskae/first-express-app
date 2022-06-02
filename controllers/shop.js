@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const Product = require("../models/product");
+const User = require("../models/user");
 
 exports.getIndex = (req, res, next) => {
   Product.find()
@@ -15,8 +16,10 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .getCart()
-    .then(cartProducts => {
+    .populate("cart.items.productId")
+    .then(user => {
+      const cartProducts = user.cart.items;
+
       res.render("shop/cart", {
         docTitle: "Cart",
         path: "/cart",
@@ -39,42 +42,6 @@ exports.postCart = (req, res, next) => {
       res.redirect("/");
     })
     .catch(error => console.log(error));
-
-  // req.user
-  //   .getCart()
-  //   .then(cart => {
-  //     fetchedCart = cart;
-  //     return cart.getProducts({
-  //       where: {
-  //         id: prodId,
-  //       },
-  //     });
-  //   })
-  //   .then(products => {
-  //     let product;
-  //     if (products.length !== 0) {
-  //       product = products[0];
-  //     }
-
-  //     // product already exists in cart => increase the quantity
-  //     if (product) {
-  //       const oldQuantity = product.cartItem.quantity;
-  //       newQuantity = oldQuantity + 1;
-  //       return product;
-  //     }
-
-  //     // product NOT in cart => add new
-  //     return Product.findById(prodId);
-  //   })
-  //   .then(product => {
-  //     return fetchedCart.addProduct(product, {
-  //       through: {
-  //         quantity: newQuantity,
-  //       },
-  //     });
-  //   })
-  //   .then(res.redirect("/cart"))
-  //   .catch(err => console.log(err));
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
@@ -132,8 +99,7 @@ exports.getProduct = (req, res, next) => {
 
   Product.findOne({ _id: new ObjectId(prodId) })
     .then(product => {
-      console.log(product);
-
+      // console.log(product);
       res.render("shop/product-details", {
         docTitle: product.title,
         path: "/products",
