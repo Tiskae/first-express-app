@@ -1,1 +1,1 @@
-Learning the basics of the express.js framework
+Learning backend tecnologies with this project using Node.js, Express.js, MongoDB and EJS

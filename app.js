@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 
 const adminRouter = require("./routes/admin");
 const shopRouter = require("./routes/shop");
+const authRouter = require("./routes/auth");
 const _404Controller = require("./controllers/404");
 
 const app = express();
@@ -39,6 +40,7 @@ app.use((req, res, next) => {
 
 app.use("/admin", adminRouter);
 app.use(shopRouter);
+app.use(authRouter);
 
 // 404 error page
 app.use(_404Controller.get404);
