@@ -7,9 +7,19 @@ const shopRouter = require("./routes/shop");
 const authRouter = require("./routes/auth");
 const _404Controller = require("./controllers/404");
 
-const app = express();
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 // const mongoConnect = require("./util/database").mongoConnect;
+
+const MONGODB_URI =
+  "mongodb+srv://Tiskae:o8M4nQR36nhclwpd@cluster0.irqruor.mongodb.net/shop?retryWrites=true&w=majority";
+
+const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 const User = require("./models/user");
 
@@ -20,22 +30,26 @@ const port = process.env.PORT || 3030;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
 
 // Get user middleware
 app.use((req, res, next) => {
-  User.findById("6298a11537b08a2c345403b6")
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then(user => {
-      // console.log(user);
-
       req.user = user;
-      // console.log(req.user);
-
       next();
     })
-    .catch(err => {
-      console.log(err);
-      next();
-    });
+    .catch(err => console.log(err));
 });
 
 app.use("/admin", adminRouter);
@@ -46,9 +60,7 @@ app.use(authRouter);
 app.use(_404Controller.get404);
 
 mongoose
-  .connect(
-    "mongodb+srv://Tiskae:o8M4nQR36nhclwpd@cluster0.irqruor.mongodb.net/shop?retryWrites=true&w=majority"
-  )
+  .connect(MONGODB_URI)
   .then(result => {
     User.findOne().then(user => {
       if (!user) {
