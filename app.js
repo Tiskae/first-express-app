@@ -10,6 +10,8 @@ const _404Controller = require("./controllers/404");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
+const User = require("./models/user");
 // const mongoConnect = require("./util/database").mongoConnect;
 
 const MONGODB_URI =
@@ -21,7 +23,7 @@ const store = new MongoDBStore({
   collection: "sessions",
 });
 
-const User = require("./models/user");
+const csrfProtection = csrf();
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -38,6 +40,7 @@ app.use(
     store: store,
   })
 );
+app.use(csrfProtection);
 
 // Get user middleware
 app.use((req, res, next) => {
@@ -52,6 +55,12 @@ app.use((req, res, next) => {
     .catch(err => console.log(err));
 });
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 app.use("/admin", adminRouter);
 app.use(shopRouter);
 app.use(authRouter);
@@ -61,20 +70,6 @@ app.use(_404Controller.get404);
 
 mongoose
   .connect(MONGODB_URI)
-  .then(result => {
-    User.findOne().then(user => {
-      if (!user) {
-        const admin = new User({
-          name: "tiskae",
-          email: "tiskae100@gmail.com",
-          cart: { items: [] },
-        });
-        return admin.save();
-      }
-
-      return null;
-    });
-  })
   .then(() => {
     app.listen(port, () => {
       console.log(`listening on ${port}`);

@@ -3,6 +3,9 @@ const Product = require("../models/product");
 
 // Admin middlewares
 exports.getAddProducts = (req, res, next) => {
+  if (!req.session.isLoggedIn) {
+    return res.redirect("/login");
+  }
   res.render("admin/edit-product", {
     docTitle: "Add product",
     path: "/admin/add-product",
