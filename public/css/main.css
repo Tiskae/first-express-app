@@ -209,6 +209,26 @@ form {
   color: white;
 }
 
+.user-message {
+  margin: auto;
+  width: 90%;
+  border: 1px solid #4771fa;
+  padding: 0.5rem;
+  background-color: #b9c9ff;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.user-message p {
+  margin-block: 0;
+}
+
+.user-message--error {
+  border-color: red;
+  background-color: #ffb0b0;
+  color: red;
+}
+
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;
@@ -218,6 +238,10 @@ form {
 
   #side-menu-toggle {
     display: none;
+  }
+
+  .user-message {
+    width: 30rem;
   }
 }
 
