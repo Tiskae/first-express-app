@@ -2,25 +2,33 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 // const sendgridTransport = require("nodemailer-sendgrid-transport");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "tiskae200@gmail.com",
-    pass: "macbook100$",
-  },
-});
+const sendMail = async () => {
+  const testAccount = await nodemailer.createTestAccount();
+  const transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false,
 
-const mailOptions = {
-  from: "tiskae200@gmail.com",
-  to: "adedokuntobiloba100@gmail.com",
-  subject: "From node app",
-  text: "That was quite easy",
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+
+  const mailOptions = {
+    from: "tiskae100@gmail.com",
+    to: "adedokuntobiloba100@gmail.com",
+    subject: "From node app",
+    text: "That was quite easy",
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) console.log(error);
+    else console.log("Email sent, " + info.response);
+  });
 };
 
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error) console.log(error);
-  else console.log("Email sent, " + info.response);
-});
+sendMail();
 
 const User = require("../models/user");
 
