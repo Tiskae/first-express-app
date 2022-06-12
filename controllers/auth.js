@@ -43,6 +43,7 @@ exports.getLogin = (req, res, next) => {
       email: "",
       password: "",
     },
+    validationErrors: [],
   });
 };
 
@@ -59,21 +60,38 @@ exports.postLogin = (req, res, next) => {
         email,
         password,
       },
+      validationErrors: errors.array(),
     });
   }
 
   User.findOne({ email: email })
     .then(user => {
       if (!user) {
-        req.flash("error", "Invalid email or password");
-        return res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          docTitle: "Sign up",
+          path: "/signup",
+          errorMessage: "Invalid email or password",
+          oldInput: {
+            email,
+            password,
+          },
+          validationErrors: [],
+        });
       }
       bcrypt
         .compare(password, user.password)
         .then(doMatch => {
           if (!doMatch) {
-            req.flash("error", "Invalid email or password");
-            return res.redirect("/login");
+            return res.status(422).render("auth/login", {
+              docTitle: "Sign up",
+              path: "/signup",
+              errorMessage: "Invalid email or password",
+              oldInput: {
+                email,
+                password,
+              },
+              validationErrors: [],
+            });
           }
           req.session.isLoggedIn = true;
           req.session.user = user;
