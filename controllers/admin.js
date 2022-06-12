@@ -1,6 +1,8 @@
 const { ObjectId } = require("mongodb");
 const Product = require("../models/product");
 
+const { validationResult } = require("express-validator");
+
 // Admin middlewares
 exports.getAddProducts = (req, res, next) => {
   if (!req.session.isLoggedIn) {
@@ -10,12 +12,38 @@ exports.getAddProducts = (req, res, next) => {
     docTitle: "Add product",
     path: "/admin/add-product",
     editing: false,
-    isAuthenticated: req.session.isLoggedIn,
+    errorMessage: null,
+    oldInput: {
+      title: "",
+      price: "",
+      imageUrl: "",
+      description: "",
+    },
+    validationErrors: [],
   });
 };
 
 exports.postAddProducts = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render("admin/edit-product", {
+      docTitle: "Sign up",
+      path: "/signup",
+      errorMessage: errors.array()[0].msg,
+      editing: false,
+      oldInput: {
+        title,
+        price,
+        imageUrl,
+        description,
+      },
+      validationErrors: errors.array(),
+    });
+  }
+
   const product = new Product({
     title,
     price,
@@ -48,7 +76,8 @@ exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editing: editMode,
         product,
-        isAuthenticated: req.session.isLoggedIn,
+        errorMessage: null,
+        validationErrors: [],
       });
     })
     .catch(err => console.log(err));
@@ -56,6 +85,25 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { id, title, imageUrl, price, description } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render("admin/edit-product", {
+      docTitle: "Sign up",
+      path: "/signup",
+      errorMessage: errors.array()[0].msg,
+      editing: true,
+      product: {
+        title,
+        price,
+        imageUrl,
+        description,
+        _id: id,
+      },
+      validationErrors: errors.array(),
+    });
+  }
 
   Product.findById(id)
     .then(product => {
@@ -81,13 +129,12 @@ exports.getProducts = (req, res, next) => {
     // .select("title price")
     // .populate("userId")
     .then(products => {
-      console.log(products);
+      // console.log(products);
 
       res.render("admin/products", {
         docTitle: "Admin Products",
         path: "/admin/products",
         prods: products,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch(err => console.log(err));

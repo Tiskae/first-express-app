@@ -7,13 +7,22 @@ const authContoller = require("../controllers/auth");
 
 const authRouter = Router();
 
-authRouter.get(
-  "/login",
-  [body("email", "Invalid email or password").isEmail()],
-  authContoller.getLogin
-);
+authRouter.get("/login", authContoller.getLogin);
 
-authRouter.post("/login", authContoller.postLogin);
+authRouter.post(
+  "/login",
+  [
+    body("email", "Please enter a valid email address")
+      .isEmail()
+      .normalizeEmail(),
+    body("password", "Password must be at least 5 characters")
+      .isLength({
+        min: 5,
+      })
+      .trim(),
+  ],
+  authContoller.postLogin
+);
 
 authRouter.post("/logout", authContoller.postLogout);
 
@@ -31,16 +40,21 @@ authRouter.post(
             return Promise.reject("Email is taken already!");
           }
         });
-      }),
-    body("password", "Password must be at least 5 characters long").isLength({
-      min: 5,
-    }),
-    body("confirmPassword").custom((value, { req }) => {
-      if (req.body.password !== value) {
-        throw new Error("Passwords do not match");
-      }
-      return true;
-    }),
+      })
+      .normalizeEmail(),
+    body("password", "Password must be at least 5 characters long")
+      .isLength({
+        min: 5,
+      })
+      .trim(),
+    body("confirmPassword")
+      .custom((value, { req }) => {
+        if (req.body.password !== value) {
+          throw new Error("Passwords do not match");
+        }
+        return true;
+      })
+      .trim(),
   ],
   authContoller.postSignup
 );
