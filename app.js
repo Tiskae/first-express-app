@@ -12,7 +12,9 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 const User = require("./models/user");
+const isAuth = require("./middleware/is-auth");
 // const mongoConnect = require("./util/database").mongoConnect;
 
 const MONGODB_URI =
@@ -26,13 +28,38 @@ const store = new MongoDBStore({
 
 const csrfProtection = csrf();
 
+const fileStrorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 const port = process.env.PORT || 3030;
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  multer({ storage: fileStrorage, fileFilter: fileFilter }).single("image")
+);
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(
   session({
     secret: "my secret",
@@ -77,6 +104,7 @@ app.use((error, req, res, next) => {
     docTitle: "Error!",
     path: "/500",
     isAuthenticated: req.session.isLoggedIn,
+    // isAuthenticated: true,
   });
 });
 
