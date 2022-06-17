@@ -104,7 +104,7 @@ app.use((error, req, res, next) => {
     docTitle: "Error!",
     path: "/500",
     isAuthenticated: req.session.isLoggedIn,
-    // isAuthenticated: true,
+    csrfToken: req.csrfToken(),
   });
 });
 
