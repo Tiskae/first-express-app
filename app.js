@@ -99,6 +99,7 @@ app.get("/500", errorController.get500);
 // 404 error page
 app.use(errorController.get404);
 app.use((error, req, res, next) => {
+  error && console.log(error);
   // res.redirect("/500");
   res.render("500", {
     docTitle: "Error!",
