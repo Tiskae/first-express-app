@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
+const fs = require("fs");
 
 const adminRouter = require("./routes/admin");
 const shopRouter = require("./routes/shop");
@@ -13,12 +14,14 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
 const User = require("./models/user");
 const isAuth = require("./middleware/is-auth");
 // const mongoConnect = require("./util/database").mongoConnect;
 
-const MONGODB_URI =
-  "mongodb+srv://Tiskae:o8M4nQR36nhclwpd@cluster0.irqruor.mongodb.net/shop?retryWrites=true&w=majority";
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.irqruor.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}retryWrites=true&w=majority`;
 
 const app = express();
 const store = new MongoDBStore({
@@ -52,7 +55,14 @@ const fileFilter = (req, file, cb) => {
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-const port = process.env.PORT || 3030;
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
+
+app.use(helmet());
+app.use(compression());
+app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
@@ -112,8 +122,6 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    app.listen(port, () => {
-      console.log(`listening on ${port}`);
-    });
+    app.listen(process.env.PORT || 3030);
   })
   .catch(error => console.log(error));
