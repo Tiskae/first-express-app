@@ -7,7 +7,7 @@
     "node": "14.18.1"
   },
   "scripts": {
-    "start": "NODE_ENV=development MONGO_USER=Tiskae MONGO_PASSWORD=kispY5G7boRv24Zu MONGO_DEFAULT_DATABASE=shop STRIPE_KEY=sk_test_51LC1UjLCBZAL5c96ZqyJAbHGyPFlsOTeCb1RGZNYnu8Tv098LPQT98vf758HyiDnm5KZafepCXhysilLT4XpPW0M00RcP3tt5t node app.js",
+    "start": "node app.js",
     "start:dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
